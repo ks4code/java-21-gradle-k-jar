@@ -22,6 +22,9 @@ public class JournalEntryController {
 
   @PostMapping
   public ResponseEntity<ProductId> createEntry(@RequestBody JournalEntry myEntry) {
+    Utils.systemOutPrint("Utils.isDev() *****", Utils.isDev());
+    Utils.systemOutPrint("Utils.isProd() *****", Utils.isProd());
+
     Utils.systemOutPrint("createEntry *****");
 
     String entryId = String.valueOf(UUID.randomUUID());

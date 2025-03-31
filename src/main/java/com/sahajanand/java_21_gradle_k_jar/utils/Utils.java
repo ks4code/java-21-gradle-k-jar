@@ -1,5 +1,9 @@
 package com.sahajanand.java_21_gradle_k_jar.utils;
 
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.stereotype.Component;
+
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
@@ -9,15 +13,16 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 
+@Component
 public class Utils {
 
   private static final boolean isDisableSystemOutPrintMethod = false;
-
   private static final String ANSI_WHITE_TEXT = "\u001B[37m";
   private static final String ANSI_RESET = "\u001B[0m";
   //  private static final String ANSI_BRIGHT_GREEN_TEXT = "\u001B[92m";
   private static final String ANSI_BRIGHT_CRAYON_TEXT = "\u001B[96m";
   private static final String ANSI_BLACK_TEXT_YELLOW_BACKGROUND = "\u001B[30;43m";
+  private static final PrintStream originalOut = System.out;
 
   /*// Encapsulated Null Output Stream
   private static final OutputStream NULL_OUTPUT_STREAM = new OutputStream() {
@@ -26,9 +31,13 @@ public class Utils {
       // Do nothing (suppress output)
     }
   };*/
-
-  private static final PrintStream originalOut = System.out;
   private static final PrintStream originalErr = System.err;
+
+  private static Environment environment;
+
+  public Utils(Environment environment) {
+    Utils.environment = environment;
+  }
 
   public static String getDateTimeLocalCurrent(String format) {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
@@ -197,5 +206,26 @@ public class Utils {
     //    System.out.print("\033[H\033[2J");
     //    System.out.flush();
 
+  }
+
+  public static String[] getActiveProfiles() {
+    String[] activeProfiles = environment.getActiveProfiles();
+
+    if (activeProfiles.length > 0) {
+      System.out.println("activeProfiles ***** " + Arrays.toString(activeProfiles));
+      return activeProfiles;
+    }
+    else {
+      System.out.println("No active profile set, Please set profile in src/main/resources/application.properties");
+      return new String[0];
+    }
+  }
+
+  public static boolean isDev() {
+    return environment.acceptsProfiles(Profiles.of("dev"));
+  }
+
+  public static boolean isProd() {
+    return environment.acceptsProfiles(Profiles.of("prod"));
   }
 }
