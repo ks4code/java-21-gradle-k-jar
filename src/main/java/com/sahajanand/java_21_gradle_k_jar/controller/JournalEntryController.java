@@ -22,11 +22,12 @@ public class JournalEntryController {
 
   @PostMapping
   public ResponseEntity<ProductId> createEntry(@RequestBody JournalEntry myEntry) {
-    Utils.systemOutPrint("myEntry", myEntry);
+    Utils.systemOutPrint("createEntry *****");
 
     String entryId = String.valueOf(UUID.randomUUID());
     myEntry.setId(entryId);
     journalEntries.put(entryId, myEntry);
+    Utils.systemOutPrint("myEntry *****", myEntry);
 
     ProductId response = new ProductId(entryId);
 

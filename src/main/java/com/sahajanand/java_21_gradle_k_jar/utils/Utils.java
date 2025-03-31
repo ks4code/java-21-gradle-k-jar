@@ -15,7 +15,8 @@ public class Utils {
 
   private static final String ANSI_WHITE_TEXT = "\u001B[37m";
   private static final String ANSI_RESET = "\u001B[0m";
-  private static final String ANSI_BRIGHT_GREEN_TEXT = "\u001B[92m";
+  //  private static final String ANSI_BRIGHT_GREEN_TEXT = "\u001B[92m";
+  private static final String ANSI_BRIGHT_CRAYON_TEXT = "\u001B[96m";
   private static final String ANSI_BLACK_TEXT_YELLOW_BACKGROUND = "\u001B[30;43m";
 
   /*// Encapsulated Null Output Stream
@@ -38,14 +39,14 @@ public class Utils {
     return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(frame -> {
       return frame.getFileName();
     }).orElse(""));
-//    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getFileName).orElse(""));
+    //    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getFileName).orElse(""));
   }
 
   public static String getCurrentClassName() {
     return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(frame -> {
       return frame.getClassName();
     }).orElse(""));
-//    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getClassName).orElse(""));
+    //    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getClassName).orElse(""));
   }
 
   public static String getCurrentMethodName() {
@@ -53,14 +54,14 @@ public class Utils {
       return frame.getMethodName();
     }).orElse(""));
 
-//    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getMethodName).orElse(""));
+    //    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getMethodName).orElse(""));
   }
 
   public static Integer getCurrentLineNumber() {
     return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(frame -> {
       return frame.getLineNumber();
     }).orElse(null));
-//    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getLineNumber).orElse(""));
+    //    return StackWalker.getInstance().walk(frames -> frames.skip(1).findFirst().map(StackWalker.StackFrame::getLineNumber).orElse(""));
   }
 
   public static StackWalker.StackFrame getCurrentStackFrame() {
@@ -104,9 +105,7 @@ public class Utils {
     }
     else if (obj instanceof Object[]) {
       // Recursively format object arrays
-      return Arrays.deepToString(Arrays.stream((Object[]) obj)
-              .map(Utils::objectFormat)
-              .toArray());
+      return Arrays.deepToString(Arrays.stream((Object[]) obj).map(Utils::objectFormat).toArray());
     }
     else if (obj instanceof Map) {
       Map<?, ?> map = (Map<?, ?>) obj;
@@ -114,7 +113,8 @@ public class Utils {
       for (Map.Entry<?, ?> entry : map.entrySet()) {
         sb.append(objectFormat(entry.getKey())).append(": ").append(objectFormat(entry.getValue())).append(", ");
       }
-      if (!map.isEmpty()) sb.setLength(sb.length() - 2); // Remove last comma
+      if (!map.isEmpty())
+        sb.setLength(sb.length() - 2); // Remove last comma
       sb.append("}");
       return sb.toString();
     }
@@ -152,27 +152,37 @@ public class Utils {
     String datePrefix = getDateTimeLocalCurrent("hh:mm:ss.SSSSSSSSS a") + " => ";
     System.out.println("\n" + Utils.getCurrentStackFrame(2));
 
+    //    format = format.trim();
+    int lastSpaceIndex = format.lastIndexOf(' ');
+
+    //    String format1 = format.substring(0, format.length() - 6).trim();
+    //    String format2 = format.substring(format.length() - 6);
+    String format1 = format.substring(0, lastSpaceIndex);
+    String format2 = format.substring(lastSpaceIndex + 1);
+
     String datePrefixColored = ANSI_WHITE_TEXT + datePrefix + ANSI_RESET;
-    String formatColored = ANSI_BLACK_TEXT_YELLOW_BACKGROUND + " " + format + " " + ANSI_RESET;
+    String formatColored = ANSI_BLACK_TEXT_YELLOW_BACKGROUND + " " + format1 + " " + ANSI_RESET;
 
     if (args == null) {
-      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " ~~ \n");
+      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s \n", format2);
       return;
     }
 
     if (args.length == 1) {
-      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " ~~ %s\n", ANSI_BRIGHT_GREEN_TEXT + objectFormat(args[0]) + ANSI_RESET);
+      //      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_GREEN_TEXT + objectFormat(args[0]) + ANSI_RESET);
+      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_CRAYON_TEXT + objectFormat(args[0]) + ANSI_RESET);
     }
     else {
-      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " ~~ %s\n", ANSI_BRIGHT_GREEN_TEXT + Arrays.deepToString(Arrays.stream(args).map(Utils::objectFormat).toArray()) + ANSI_RESET);
+      //      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_GREEN_TEXT + Arrays.deepToString(Arrays.stream(args).map(Utils::objectFormat).toArray()) + ANSI_RESET);
+      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_CRAYON_TEXT + Arrays.deepToString(Arrays.stream(args).map(Utils::objectFormat).toArray()) + ANSI_RESET);
     }
   }
 
   public static void disableAllSystemOutSystemErr(boolean isDisable) {
     if (isDisable) {
       systemOutPrint("Disabled all System.out System.err");
-//      System.setOut(new PrintStream(NULL_OUTPUT_STREAM));
-//      System.setErr(new PrintStream(NULL_OUTPUT_STREAM));
+      //      System.setOut(new PrintStream(NULL_OUTPUT_STREAM));
+      //      System.setErr(new PrintStream(NULL_OUTPUT_STREAM));
       System.setOut(new PrintStream(OutputStream.nullOutputStream()));
       System.setErr(new PrintStream(OutputStream.nullOutputStream()));
     }
@@ -184,8 +194,8 @@ public class Utils {
 
   public static void consoleClear() {
     //Not Work
-//    System.out.print("\033[H\033[2J");
-//    System.out.flush();
+    //    System.out.print("\033[H\033[2J");
+    //    System.out.flush();
 
   }
 }
