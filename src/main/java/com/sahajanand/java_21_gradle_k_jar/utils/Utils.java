@@ -3,6 +3,7 @@ package com.sahajanand.java_21_gradle_k_jar.utils;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -22,7 +23,11 @@ public class Utils {
   //  private static final String ANSI_BRIGHT_GREEN_TEXT = "\u001B[92m";
   private static final String ANSI_BRIGHT_CRAYON_TEXT = "\u001B[96m";
   private static final String ANSI_BLACK_TEXT_YELLOW_BACKGROUND = "\u001B[30;43m";
+  private static final String ANSI_ITALIC_START = "\033[3m";
+  private static final String ANSI_ITALIC_END = "\033[0m";
+
   private static final PrintStream originalOut = System.out;
+  //  private static final PrintStream originalErr = System.err;
 
   /*// Encapsulated Null Output Stream
   private static final OutputStream NULL_OUTPUT_STREAM = new OutputStream() {
@@ -31,7 +36,6 @@ public class Utils {
       // Do nothing (suppress output)
     }
   };*/
-  private static final PrintStream originalErr = System.err;
 
   private static Environment environment;
 
@@ -179,25 +183,30 @@ public class Utils {
 
     if (args.length == 1) {
       //      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_GREEN_TEXT + objectFormat(args[0]) + ANSI_RESET);
-      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_CRAYON_TEXT + objectFormat(args[0]) + ANSI_RESET);
+      //      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_CRAYON_TEXT + objectFormat(args[0]) + ANSI_RESET);
+      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s " + ANSI_ITALIC_START + "%s" + ANSI_ITALIC_END + "\n", format2, ANSI_BRIGHT_CRAYON_TEXT + objectFormat(args[0]) + ANSI_RESET);
     }
     else {
       //      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_GREEN_TEXT + Arrays.deepToString(Arrays.stream(args).map(Utils::objectFormat).toArray()) + ANSI_RESET);
-      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s %s\n", format2, ANSI_BRIGHT_CRAYON_TEXT + Arrays.deepToString(Arrays.stream(args).map(Utils::objectFormat).toArray()) + ANSI_RESET);
+      System.out.printf(Locale.getDefault(), datePrefixColored + formatColored + " %s " + ANSI_ITALIC_START + "%s" + ANSI_ITALIC_END + "\n", format2, ANSI_BRIGHT_CRAYON_TEXT + Arrays.deepToString(Arrays.stream(args).map(Utils::objectFormat).toArray()) + ANSI_RESET);
     }
   }
 
-  public static void disableAllSystemOutSystemErr(boolean isDisable) {
+  //  public static void disableAllSystemOutSystemErr(boolean isDisable) {
+  public static void disableAllSystemOut(boolean isDisable) {
     if (isDisable) {
-      systemOutPrint("Disabled all System.out System.err");
+      //      systemOutPrint("Disabled all System.out System.err");
+      systemOutPrint("Disabled all System.out");
+
       //      System.setOut(new PrintStream(NULL_OUTPUT_STREAM));
       //      System.setErr(new PrintStream(NULL_OUTPUT_STREAM));
+
       System.setOut(new PrintStream(OutputStream.nullOutputStream()));
-      System.setErr(new PrintStream(OutputStream.nullOutputStream()));
+      //      System.setErr(new PrintStream(OutputStream.nullOutputStream()));
     }
     else {
       System.setOut(originalOut);
-      System.setErr(originalErr);
+      //      System.setErr(originalErr);
     }
   }
 

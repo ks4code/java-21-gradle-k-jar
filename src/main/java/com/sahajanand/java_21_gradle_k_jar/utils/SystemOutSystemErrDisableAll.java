@@ -6,8 +6,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class SystemOutSystemErrDisableAll {
 
+  private final Utils utils;
+
+  public SystemOutSystemErrDisableAll(Utils utils) {
+    this.utils = utils;
+  }
+
   @PostConstruct
   public void init() {
-    Utils.disableAllSystemOutSystemErr(false);
+    if (Utils.isDev()) {
+      Utils.disableAllSystemOut(false);
+    }
+    else if (Utils.isProd()) {
+      Utils.disableAllSystemOut(true);
+    }
   }
 }
