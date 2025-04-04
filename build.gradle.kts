@@ -24,6 +24,7 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
+    developmentOnly("org.springframework.boot:spring-boot-devtools:3.4.4")
 }
 
 tasks.withType<Test> {
